@@ -1,0 +1,27 @@
+name: Compilar DaysGoneSpawner (OpenOrbis)
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Descarregar o Código do Repositório
+      uses: actions/checkout@v3
+
+    - name: Configurar e Compilar usando Docker (OpenOrbis SDK)
+      run: |
+        # Usa um contentor Docker comunitário que já tem o OpenOrbis SDK pré-instalado
+        docker run --rm -v ${{ github.workspace }}:/project -w /project openorbis/ps4-toolchain bash -c "make clean && make"
+
+    - name: Guardar o ficheiro .prx compilado (Artifacts)
+      uses: actions/upload-artifact@v3
+      with:
+        name: DaysGoneSpawner-Plugin
+        path: DaysGoneSpawner.prx
+        
